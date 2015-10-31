@@ -29,8 +29,8 @@
   },
   "validations": [],
   "relations": {
-    "postTypes": {
-      "type": "hasMany",
+    "postType": {
+      "type": "belongsTo",
       "model": "PostType",
       "foreignKey": "post_type_id"
     }
