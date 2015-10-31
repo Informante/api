@@ -24,7 +24,7 @@
       "required": true
     },
     "user_id": {
-      "type": "number"
+      "type": "string"
     }
   },
   "validations": [],
@@ -33,6 +33,11 @@
       "type": "belongsTo",
       "model": "PostType",
       "foreignKey": "post_type_id"
+    },
+    "user": {
+      "type": "belongsTo",
+      "model": "user",
+      "foreignKey": "user_id"
     }
   },
   "acls": [],
