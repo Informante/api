@@ -19,12 +19,22 @@
       "type": "geopoint",
       "required": true
     },
+    "post_type_id": {
+      "type": "number",
+      "required": true
+    },
     "user_id": {
       "type": "number"
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "postTypes": {
+      "type": "hasMany",
+      "model": "PostType",
+      "foreignKey": "post_type_id"
+    }
+  },
   "acls": [],
   "methods": {}
 }
