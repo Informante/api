@@ -25,6 +25,9 @@
     },
     "user_id": {
       "type": "string"
+    },
+    "likes": {
+      "type": "array"
     }
   },
   "validations": [],
