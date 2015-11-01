@@ -1,7 +1,7 @@
 {
   "name": "PostType",
   "plural": "PostTypes",
-  "base": "PersistedModel",
+  "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -18,6 +18,20 @@
   },
   "validations": [],
   "relations": {},
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "*",
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
+      "accessType": "READ",
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "property": "all"
+    }
+  ],
   "methods": {}
 }
