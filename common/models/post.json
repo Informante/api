@@ -43,6 +43,21 @@
       "foreignKey": "user_id"
     }
   },
-  "acls": [],
+  "acls": [
+    {
+      "accessType": "READ",
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "property": "feed"
+    },
+    {
+      "accessType": "EXECUTE",
+      "permission": "ALLOW",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "property": "like"
+    }
+  ],
   "methods": {}
 }
