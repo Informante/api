@@ -10,6 +10,9 @@ module.exports = function(Post) {
   Post.remoteMethod('feed',
     {
       returns: {
+        http: {
+          verb: 'get'
+        },
         root: true,
         type: 'object'
       }
