@@ -28,6 +28,9 @@
     },
     "likes": {
       "type": "array"
+    },
+    "created_at": {
+      "type": "date"
     }
   },
   "validations": [],
@@ -46,16 +49,16 @@
   "acls": [
     {
       "accessType": "READ",
-      "permission": "ALLOW",
       "principalType": "ROLE",
       "principalId": "$authenticated",
+      "permission": "ALLOW",
       "property": "feed"
     },
     {
       "accessType": "EXECUTE",
-      "permission": "ALLOW",
       "principalType": "ROLE",
       "principalId": "$authenticated",
+      "permission": "ALLOW",
       "property": "like"
     }
   ],
