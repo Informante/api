@@ -2,6 +2,9 @@ var loopback = require('loopback');
 
 module.exports = function(Post) {
 
+  Post.disableRemoteMethod('__get__postType', false);
+  Post.disableRemoteMethod('__get__user', false);
+
   Post.generate = function(image, description, lat, lng, post_type_id,  cb) {
     // set current context
     var ctx = loopback.getCurrentContext();
