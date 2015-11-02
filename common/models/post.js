@@ -2,6 +2,26 @@ var loopback = require('loopback');
 
 module.exports = function(Post) {
 
+  Post.generate = function(image, description, lat, lng, post_type_id,  cb) {
+    // set current context
+    var ctx = loopback.getCurrentContext();
+    // set userId based accessToken
+    var userId = ctx.active.http.req.accessToken.userId;
+
+    Post.create({
+      'image': image,
+      'description': description,
+      'location': {
+        lat: lat,
+        lng: lng
+      },
+      "post_type_id": post_type_id,
+      "user_id": userId,
+      'likes': [],
+      'created_at': new Date()
+    }, cb);
+  }
+
   // Added or remove likes to post
   Post.like = function(id, cb) {
     // set current context
@@ -67,6 +87,40 @@ module.exports = function(Post) {
       ]
     }, cb);
   }
+
+  Post.remoteMethod('generate', {
+    accepts: [
+      {
+        arg: 'image',
+        type: 'string',
+        required: true
+      },
+      {
+        arg: 'description',
+        type: 'string',
+        required: true
+      },
+      {
+        arg: 'lat',
+        type: 'string',
+        required: true
+      },
+      {
+        arg: 'lng',
+        type: 'string',
+        required: true
+      },
+      {
+        arg: 'post_type_id',
+        type: 'string',
+        required: true
+      }
+    ],
+    returns: {
+      root: true,
+      type: 'number'
+    }
+  });
 
   Post.remoteMethod('like', {
     accepts: {
