@@ -58,6 +58,7 @@ module.exports = function(Post) {
   // latest posts
   Post.feed = function(cb) {
     Post.find({
+      order: 'created_at DESC',
       limit: 15,
       include: [
         {
