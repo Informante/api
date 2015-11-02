@@ -1,7 +1,7 @@
 {
   "name": "Post",
   "plural": "Posts",
-  "base": "PersistedModel",
+  "base": "Model",
   "idInjection": true,
   "options": {
     "validateUpsert": true
@@ -48,9 +48,15 @@
   },
   "acls": [
     {
+      "accessType": "*",
+      "permission": "DENY",
+      "principalType": "ROLE",
+      "principalId": "$everyone"
+    },
+    {
       "accessType": "READ",
       "principalType": "ROLE",
-      "principalId": "$authenticated",
+      "principalId": "$everyone",
       "permission": "ALLOW",
       "property": "feed"
     },
@@ -60,6 +66,13 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "like"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "generate"
     }
   ],
   "methods": {}
