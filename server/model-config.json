@@ -42,6 +42,10 @@
     "dataSource": "db",
     "public": false
   },
+  "Report": {
+    "dataSource": "db",
+    "public": false
+  },
   "Post": {
     "dataSource": "db",
     "public": true
@@ -49,9 +53,5 @@
   "PostType": {
     "dataSource": "db",
     "public": true
-  },
-  "Report": {
-    "dataSource": "db",
-    "public": false
   }
 }
