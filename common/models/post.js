@@ -1,4 +1,6 @@
 var loopback = require('loopback');
+var moment = require('moment');
+moment.locale('es');
 
 module.exports = function(Post) {
 
@@ -89,7 +91,22 @@ module.exports = function(Post) {
           }
         }
       ]
-    }, cb);
+    }, function(err, posts) {
+      if (err) {
+        cb(err, null);
+      }
+      else if (posts) {
+        var allPost = [];
+        posts.forEach(function(post) {
+          post.created_at_format = moment(post.created_at).fromNow();
+          allPost.push(post);
+        })
+        cb(null, allPost);
+      }
+      else {
+        cb(null, []);
+      }
+    });
   }
 
   Post.remoteMethod('generate', {
