@@ -39,7 +39,7 @@ module.exports = function(Post) {
        // find post by id
        Post.findById(id, function(err, post) {
          if (err) {
-           cb(null, 'No existe.');
+           cb(null, 'Error al intentar comprobar la existencia de la publicación.');
          }
          else if (post) {
            Report.find({
@@ -47,7 +47,7 @@ module.exports = function(Post) {
              user_id: userId
            }, function(err, report) {
              if (err) {
-               cb(err, null);
+               cb(null, 'Error al intentar comprobar el reporte.');
              }
              else if (report) {
                // report exists
@@ -61,7 +61,7 @@ module.exports = function(Post) {
                  created_at: new Date()
                }, function(err, report) {
                  if (err) {
-                   cb(err, null);
+                   cb(null, 'Error al intentar crear el reporte.');
                  }
                  else if(report) {
                    cb(null, 'Tu reporte se ha generado.');
@@ -71,7 +71,7 @@ module.exports = function(Post) {
            });
          }
          else {
-           cb(null, 'No existe el registro.');
+           cb(null, 'No existe la publicación.');
          }
        });
      }
