@@ -42,16 +42,31 @@ module.exports = function(Post) {
            cb(null, 'No existe.');
          }
          else if (post) {
-           Report.create({
+           Report.find({
              post_id: id,
-             user_id: userId,
-             created_at: new Date()
+             user_id: userId
            }, function(err, report) {
              if (err) {
                cb(err, null);
              }
-             else if(report) {
-               cb(null, 'Ok');
+             else if (report) {
+               // report exists
+               cb(null, 'Ya has reportado esta publicación.');
+             }
+             else {
+               // create report
+               Report.create({
+                 post_id: id,
+                 user_id: userId,
+                 created_at: new Date()
+               }, function(err, report) {
+                 if (err) {
+                   cb(err, null);
+                 }
+                 else if(report) {
+                   cb(null, 'Tu reporte se ha generado.');
+                 }
+               });
              }
            });
          }
