@@ -43,13 +43,15 @@ module.exports = function(Post) {
          }
          else if (post) {
            Report.find({
-             post_id: id,
-             user_id: userId
+             where: {
+               post_id: id,
+               user_id: userId
+             }
            }, function(err, report) {
              if (err) {
                cb(null, 'Error al intentar comprobar el reporte.');
              }
-             else if (report) {
+             else if (report.length > 0) {
                // report exists
                cb(null, 'Ya has reportado esta publicación.');
              }
@@ -59,11 +61,11 @@ module.exports = function(Post) {
                  post_id: id,
                  user_id: userId,
                  created_at: new Date()
-               }, function(err, report) {
+               }, function(err, reportCreated) {
                  if (err) {
                    cb(null, 'Error al intentar crear el reporte.');
                  }
-                 else if(report) {
+                 else if(reportCreated) {
                    cb(null, 'Tu reporte se ha generado.');
                  }
                });
