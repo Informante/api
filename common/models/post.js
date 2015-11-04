@@ -27,6 +27,53 @@ module.exports = function(Post) {
     }, cb);
   }
 
+   Post.getApp(function(err, app) {
+     var Report = app.models.Report;
+
+     // Report a post
+     Post.report = function(id, cb) {
+       // set current context
+       var ctx = loopback.getCurrentContext();
+       // set userId based accessToken
+       var userId = ctx.active.http.req.accessToken.userId;
+       // find post by id
+       Post.findById(id, function(err, post) {
+         if (err) {
+           cb(null, 'No existe.');
+         }
+         else if (post) {
+           Report.create({
+             post_id: id,
+             user_id: userId,
+             created_at: new Date()
+           }, function(err, report) {
+             if (err) {
+               cb(err, null);
+             }
+             else if(report) {
+               cb(null, 'Ok');
+             }
+           });
+         }
+         else {
+           cb(null, 'No existe el registro.');
+         }
+       });
+     }
+
+     Post.remoteMethod('report', {
+       accepts: {
+         arg: 'id',
+         type: 'string',
+         required: true
+       },
+       returns: {
+         root: true,
+         type: 'string'
+       }
+     });
+   });
+
   // Added or remove likes to post
   Post.like = function(id, cb) {
     // set current context
