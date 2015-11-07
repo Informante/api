@@ -29,6 +29,9 @@
     "likes": {
       "type": "array"
     },
+    "comments": {
+      "type": "array"
+    },
     "created_at": {
       "type": "date"
     }

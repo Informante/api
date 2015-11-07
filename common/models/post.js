@@ -23,6 +23,7 @@ module.exports = function(Post) {
       "post_type_id": post_type_id,
       "user_id": userId,
       'likes': [],
+      'comments': [],
       'created_at': new Date()
     }, cb);
   }
