@@ -1,5 +1,6 @@
 var loopback = require('loopback');
 var moment = require('moment');
+var numeral = require('numeral');
 moment.locale('es');
 
 module.exports = function(Post) {
@@ -159,6 +160,8 @@ module.exports = function(Post) {
         cb(err, null);
       }
       else if (post) {
+        post.countLike = numeral(post.likes.length).format('0a');
+        post.countComment = numeral(post.comments.length).format('0a');
         post.created_at_format = moment(post.created_at).fromNow();
         cb(null, post);
       }
