@@ -21,8 +21,8 @@ module.exports = function(Post) {
         lat: lat,
         lng: lng
       },
-      "post_type_id": post_type_id,
-      "user_id": userId,
+      'post_type_id': post_type_id,
+      'user_id': userId,
       'likes': [],
       'comments': [],
       'created_at': new Date()
@@ -31,6 +31,84 @@ module.exports = function(Post) {
 
   Post.getApp(function(err, app) {
     var Report = app.models.Report;
+    var UserIdentity = app.models.userIdentity;
+    var Comment = app.models.Comment;
+
+    // add comment
+    Post.comment = function(id, message, cb) {
+
+      // set current context
+      var ctx = loopback.getCurrentContext();
+      // set userId based accessToken
+      var userId = ctx.active.http.req.accessToken.userId;
+
+      Post.findById(id, function(err, post) {
+        if (err) {
+          cb(err, null);
+        }
+        else if(post) {
+          Comment.find(
+            {
+              'where': {
+                'post_id': id,
+                'user_id': userId,
+                'created_at': {
+                  gt: moment().subtract(30, 'seconds')
+                }
+              }
+            }, function(err, commentExists) {
+              console.log(commentExists);
+              if (err) {
+                cb(err, null);
+              }
+              else if(commentExists.length > 0) {
+                cb(new Error('Debes esperar 30 segundos antes de agregar otro comentario.'), null);
+              }
+              else {
+                Comment.create({
+                  'message': message,
+                  'user_id': userId,
+                  'post_id': id,
+                  'enabled': true,
+                  'created_at': new Date()
+                }, function(err, comment) {
+                  if (err) {
+                    cb(err, null);
+                  }
+                  else if(comment) {
+                    cb(null, comment);
+                  }
+                  else {
+                    cb('Error al intentar crear el comentario', null);
+                  }
+                })
+              }
+            });
+        }
+        else {
+          cb(null, 'No existe una denuncia con el identificador enviado.');
+        }
+      });
+    }
+
+    Post.remoteMethod('comment', {
+      accepts: [
+        {
+          arg: 'id',
+          type: 'string',
+          required: true
+        },
+        {
+          arg: 'message',
+          type: 'string',
+          required: true
+        }
+      ],
+      returns: {
+        root: true,
+        type: 'object'
+      }
+    });
 
     // Report a post
     Post.report = function(id, cb) {
