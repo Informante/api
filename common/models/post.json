@@ -80,6 +80,13 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "report"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$authenticated",
+      "permission": "ALLOW",
+      "property": "read"
     }
   ],
   "methods": {}
