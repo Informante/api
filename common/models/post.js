@@ -260,11 +260,18 @@ module.exports = function(Post) {
       }
       else if (post) {
         var postObject = post.toJSON();
-        post.countLike = numeral(post.likes.length).format('0a');
-        post.countComment = numeral(postObject.comments.length).format('0a');
-        post.created_at_format = moment(post.created_at).fromNow();
-
-        cb(null, post);
+        var comments = [];
+        postObject.countLike = numeral(post.likes.length).format('0a');
+        postObject.countComment = numeral(postObject.comments.length).format('0a');
+        postObject.created_at_format = moment(post.created_at).fromNow();
+        if (postObject.comments.length > 0) {
+          postObject.comments.forEach(function(comment) {
+            comment.created_at_format = moment(comment.created_at).fromNow();
+            comments.push(comment);
+          });
+          postObject.comments = comments;
+        }
+        cb(null, postObject);
       }
       else {
         cb(null, []);
