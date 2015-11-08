@@ -1,6 +1,7 @@
 var loopback = require('loopback');
 var moment = require('moment');
 var numeral = require('numeral');
+var _ = require("underscore");
 moment.locale('es');
 
 module.exports = function(Post) {
@@ -208,7 +209,25 @@ module.exports = function(Post) {
     Post.findById(id, {
       include: [
         {
-          relation: 'comments'
+          relation: 'comments',
+          scope: {
+            include: { // include orders for the owner
+              relation: 'user',
+              scope: {
+                fields: [
+                  'id'
+                ],
+                include: { // include orders for the owner
+                  relation: 'identities',
+                  scope: {
+                    fields: [
+                      'profile'
+                    ]
+                  }
+                }
+              }
+            }
+          }
         },
         {
           relation: 'postType',
@@ -240,9 +259,11 @@ module.exports = function(Post) {
         cb(err, null);
       }
       else if (post) {
+        var postObject = post.toJSON();
         post.countLike = numeral(post.likes.length).format('0a');
-        post.countComment = numeral(post.comments.length).format('0a');
+        post.countComment = numeral(postObject.comments.length).format('0a');
         post.created_at_format = moment(post.created_at).fromNow();
+
         cb(null, post);
       }
       else {
