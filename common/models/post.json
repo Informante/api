@@ -44,6 +44,11 @@
       "type": "belongsTo",
       "model": "user",
       "foreignKey": "user_id"
+    },
+    "comments": {
+      "type": "hasMany",
+      "model": "Comment",
+      "foreignKey": "post_id"
     }
   },
   "acls": [
