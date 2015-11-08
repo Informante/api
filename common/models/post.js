@@ -24,7 +24,6 @@ module.exports = function(Post) {
       'post_type_id': post_type_id,
       'user_id': userId,
       'likes': [],
-      'comments': [],
       'created_at': new Date()
     }, cb);
   }
@@ -239,7 +238,7 @@ module.exports = function(Post) {
       }
       else if (post) {
         post.countLike = numeral(post.likes.length).format('0a');
-        post.countComment = numeral(post.comments.length).format('0a');
+        //post.countComment = numeral(post.comments.length).format('0a');
         post.created_at_format = moment(post.created_at).fromNow();
         cb(null, post);
       }
