@@ -70,7 +70,6 @@ module.exports = function(Post) {
                 }
               }
             }, function(err, commentExists) {
-              console.log(commentExists);
               if (err) {
                 cb(err, null);
               }
@@ -89,7 +88,42 @@ module.exports = function(Post) {
                     cb(err, null);
                   }
                   else if(comment) {
-                    cb(null, comment);
+                    Post.findById(id, {
+                      include: [
+                        {
+                          relation: 'comments',
+                          scope: {
+                            include: { // include orders for the owner
+                              relation: 'user',
+                              scope: {
+                                fields: [
+                                  'id'
+                                ],
+                                include: { // include orders for the owner
+                                  relation: 'identities',
+                                  scope: {
+                                    fields: [
+                                      'profile'
+                                    ]
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }, function(err, postComment) {
+                      if (err) {
+                        cb(null, 'Error al intentar obtener los comentarios.');
+                      }
+                      else if (postComment) {
+                        var postObject = postComment.toJSON();
+                        cb(null, postObject.comments);
+                      }
+                      else {
+                        cb(null, 'No existen comentarios.');
+                      }
+                    });
                   }
                   else {
                     cb('Error al intentar crear el comentario', null);
