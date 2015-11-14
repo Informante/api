@@ -118,6 +118,14 @@ module.exports = function(Post) {
                       }
                       else if (postComment) {
                         var postObject = postComment.toJSON();
+                        var comments = [];
+                        if (postObject.comments.length > 0) {
+                          postObject.comments.forEach(function(comment) {
+                            comment.created_at_format = moment(comment.created_at).fromNow();
+                            comments.push(comment);
+                          });
+                          postObject.comments = comments;
+                        }
                         cb(null, postObject.comments);
                       }
                       else {
