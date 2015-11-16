@@ -28,18 +28,35 @@ module.exports = function(Post) {
     // set userId based accessToken
     var userId = ctx.active.http.req.accessToken.userId;
 
-    Post.create({
-      'image': image,
-      'description': description,
-      'location': {
-        lat: lat,
-        lng: lng
-      },
-      'post_type_id': post_type_id,
-      'user_id': userId,
-      'likes': [],
-      'created_at': new Date()
-    }, cb);
+    Post.find({
+      'where': {
+        'user_id': userId,
+        'created_at': {
+          gt: moment().subtract(30, 'seconds')
+        }
+      }
+    }, function(err, postExists) {
+      if (err) {
+        cb(err, null);
+      }
+      else if(postExists.length > 0) {
+        cb(new Error('Debes esperar 30 segundos antes de agregar otra denuncia.'), null);
+      }
+      else {
+        Post.create({
+          'image': image,
+          'description': description,
+          'location': {
+            lat: lat,
+            lng: lng
+          },
+          'post_type_id': post_type_id,
+          'user_id': userId,
+          'likes': [],
+          'created_at': new Date()
+        }, cb);
+      }
+    });
   }
 
   Post.getApp(function(err, app) {
