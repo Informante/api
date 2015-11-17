@@ -106,6 +106,13 @@
       "principalId": "banned",
       "permission": "DENY",
       "property": "generate"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "banned",
+      "permission": "DENY",
+      "property": "comment"
     }
   ],
   "methods": {}
