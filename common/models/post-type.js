@@ -1,7 +1,9 @@
 module.exports = function(PostType) {
 
   PostType.all = function(id, cb) {
-    PostType.find({}, cb);
+    PostType.find({
+      order: 'name ASC'
+    }, cb);
   }
 
   PostType.remoteMethod('all', {
