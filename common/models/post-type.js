@@ -1,13 +1,14 @@
 module.exports = function(PostType) {
 
-  PostType.all = function(id, cb) {
+  PostType.allData = function(cb) {
     PostType.find({
-      order: 'name ASC'
+      order: ['name ASC']
     }, cb);
   }
 
-  PostType.remoteMethod('all', {
+  PostType.remoteMethod('allData', {
     http: {
+      path: '/all',
       verb: 'get'
     },
     returns: {
