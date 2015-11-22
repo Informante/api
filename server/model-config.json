@@ -42,10 +42,6 @@
     "dataSource": "db",
     "public": false
   },
-  "Report": {
-    "dataSource": "db",
-    "public": false
-  },
   "Post": {
     "dataSource": "db",
     "public": true
@@ -55,6 +51,10 @@
     "public": true
   },
   "Comment": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Report": {
     "dataSource": "db",
     "public": true
   }

@@ -3,6 +3,8 @@ var moment = require('moment');
 require('twix');
 moment.locale('es');
 
+var limitSeconds = 10;
+
 module.exports = function(Comment) {
   // disableRemoteMethod
   Comment.disableRemoteMethod('__get__user', false);
@@ -29,7 +31,7 @@ module.exports = function(Comment) {
               'post_id': id,
               'user_id': userId,
               'created_at': {
-                gt: moment().subtract(30, 'seconds')
+                gt: moment().subtract(limitSeconds, 'seconds')
               }
             }
           };
@@ -40,8 +42,8 @@ module.exports = function(Comment) {
               cb(err, null);
             }
             else if(commentExists.length > 0) {
-              var seconds = Math.abs(moment(commentExists[0].created_at).twix(new Date()).count('seconds') - 30);
-
+              // create seconds based created_at and now
+              var seconds = Math.abs(moment(commentExists[0].created_at).twix(new Date()).count('seconds') - limitSeconds);
               var error = new Error('Debe esperar ' + seconds + ' segundos antes de agregar otro comentario.');
               error.status = 401;
               cb(error, null);

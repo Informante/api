@@ -57,103 +57,7 @@ module.exports = function(Post) {
         }, cb);
       }
     });
-  }
-
-  Post.getApp(function(err, app) {
-    var Report = app.models.Report;
-    var UserIdentity = app.models.userIdentity;
-    var Comment = app.models.Comment;
-
-    /**
-     * DEPRECATED
-     * New path: /api/Comments/add
-     */
-    // add comment
-    Post.comment = function(id, message, cb) {
-      var error = new Error('Debe actualizar Informante desde Google Play para poder agregar comentarios');
-      error.status = 409;
-      cb(error, null);
-    }
-
-    Post.remoteMethod('comment', {
-      accepts: [
-        {
-          arg: 'id',
-          type: 'string',
-          required: true
-        },
-        {
-          arg: 'message',
-          type: 'string',
-          required: true
-        }
-      ],
-      returns: {
-        root: true,
-        type: 'object'
-      }
-    });
-
-    // Report a post
-    Post.report = function(id, cb) {
-      // set current context
-      var ctx = loopback.getCurrentContext();
-      // set userId based accessToken
-      var userId = ctx.active.http.req.accessToken.userId;
-      // find post by id
-      Post.findById(id, function(err, post) {
-        if (err) {
-          cb(null, 'Error al intentar comprobar la existencia de la publicación.');
-        }
-        else if (post) {
-          Report.find({
-            where: {
-              post_id: id,
-              user_id: userId
-            }
-          }, function(err, report) {
-            if (err) {
-              cb(null, 'Error al intentar comprobar el reporte.');
-            }
-            else if (report.length > 0) {
-              // report exists
-              cb(null, 'Ya has reportado esta publicación.');
-            }
-            else {
-              // create report
-              Report.create({
-                post_id: id,
-                user_id: userId,
-                created_at: new Date()
-              }, function(err, reportCreated) {
-                if (err) {
-                  cb(null, 'Error al intentar crear el reporte.');
-                }
-                else if(reportCreated) {
-                  cb(null, 'Tu reporte se ha generado.');
-                }
-              });
-            }
-          });
-        }
-        else {
-          cb(null, 'No existe la publicación.');
-        }
-      });
-    }
-
-    Post.remoteMethod('report', {
-      accepts: {
-        arg: 'id',
-        type: 'string',
-        required: true
-      },
-      returns: {
-        root: true,
-        type: 'string'
-      }
-    });
-  });
+  };
 
   // Added or remove likes to post
   Post.like = function(id, cb) {
@@ -164,7 +68,7 @@ module.exports = function(Post) {
     // find post by id
     Post.findById(id, function(err, post) {
       if (err) {
-        cb(null, 0);
+        cb(null, err);
       }
       else if (post) {
         var item = userId.toString();
@@ -172,21 +76,27 @@ module.exports = function(Post) {
         if (position===-1) {
           post.likes.push(item);
           post.save(function(err) {
-            cb(null, post.likes.length);
+            cb(null, {
+              message: post.likes.length
+            });
           });
         }
         else {
           post.likes.splice(position, 1);
           post.save(function(err) {
-            cb(null, post.likes.length);
+            cb(null, {
+              message: post.likes.length
+            });
           });
         }
       }
       else {
-        cb(null, 0);
+        var error = new Error('Error al intentar comprobar la existencia de la publicación.');
+        error.status = 409;
+        cb(error, null);
       }
     });
-  }
+  };
 
   // data
   Post.read = function(id, cb) {
@@ -261,7 +171,7 @@ module.exports = function(Post) {
         cb(null, []);
       }
     });
-  }
+  };
 
   // latest posts
   Post.feed = function(cb) {
@@ -309,14 +219,14 @@ module.exports = function(Post) {
           postObject.countComment = numeral(postObject.comments.length).format('0a');
           postObject.created_at_format = moment(post.created_at).fromNow();
           allPost.push(postObject);
-        })
+        });
         cb(null, allPost);
       }
       else {
         cb(null, []);
       }
     });
-  }
+  };
 
   Post.remoteMethod('generate', {
     accepts: [
