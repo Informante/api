@@ -29,6 +29,12 @@
     "likes": {
       "type": "array"
     },
+    "ip": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
     "created_at": {
       "type": "date"
     }

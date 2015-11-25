@@ -22,25 +22,50 @@ module.exports = function(Post) {
   Post.disableRemoteMethod('__count__comments', false);
   Post.disableRemoteMethod('__delete__comments', false);
 
-  Post.generate = function(image, description, lat, lng, post_type_id,  cb) {
+  Post.generate = function(image, description, lat, lng, post_type_id, is_anonymous, cb) {
     // set current context
     var ctx = loopback.getCurrentContext();
-    // set userId based accessToken
-    var userId = ctx.active.http.req.accessToken.userId;
+
+    // get ip address based http request
+    var ip = ctx.active.http.req.connection.remoteAddress;
+
+    // convert string is_anonymous to boolean
+    var isAnonymous = JSON.parse(is_anonymous);
+    var enabled = (isAnonymous) ? false : true;
+
+    var userId = '';
+    var limitTime = 10;
+    var limitRows = 1;
+    var limitType = 'seconds';
+
+    if (isAnonymous) {
+      // User based anonymous user
+      // https://www.facebook.com/profile.php?id=100010809870782
+      userId = process.env.ANONYMOUS_USER;
+    }
+    else {
+      // set userId based accessToken
+      userId = ctx.active.http.req.accessToken.userId;
+    }
 
     Post.find({
       'where': {
         'user_id': userId,
         'created_at': {
-          gt: moment().subtract(30, 'seconds')
-        }
+          gt: moment().subtract(limitTime, limitType)
+        },
+        'ip': ip
       }
     }, function(err, postExists) {
       if (err) {
         cb(err, null);
       }
-      else if(postExists.length > 0) {
-        cb(new Error('Debes esperar 30 segundos antes de agregar otra denuncia.'), null);
+      else if(postExists.length >= limitRows) {
+        // create seconds based created_at and now
+        var seconds = Math.abs(moment(postExists[0].created_at).twix(new Date()).count('seconds') - limitTime);
+        var error = new Error('Debe esperar ' + seconds + ' segundos antes de agregar otro comentario.');
+        error.status = 401;
+        cb(error, null);
       }
       else {
         Post.create({
@@ -53,6 +78,8 @@ module.exports = function(Post) {
           'post_type_id': post_type_id,
           'user_id': userId,
           'likes': [],
+          'ip': ip,
+          'enabled': enabled,
           'created_at': new Date()
         }, cb);
       }
@@ -255,6 +282,11 @@ module.exports = function(Post) {
       },
       {
         arg: 'post_type_id',
+        type: 'string',
+        required: true
+      },
+      {
+        arg: 'is_anonymous',
         type: 'string',
         required: true
       }
