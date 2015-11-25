@@ -174,10 +174,13 @@ module.exports = function(Post) {
   };
 
   // latest posts
-  Post.feed = function(cb) {
+  Post.feed = function(skip, cb) {
+    skip = skip || 0;
+
     Post.find({
       order: 'created_at DESC',
       limit: 15,
+      skip: skip,
       include: [
         {
           relation: 'comments'
@@ -290,6 +293,14 @@ module.exports = function(Post) {
   });
 
   Post.remoteMethod('feed', {
+    accepts: {
+      arg: 'skip',
+      type: 'number',
+      required: false,
+      http: {
+        source: 'query'
+      }
+    },
     http: {
       verb: 'get'
     },
