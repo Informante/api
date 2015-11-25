@@ -29,6 +29,7 @@
     "randomstring": "^1.1.0",
     "sd-expires": "0.0.1",
     "serve-favicon": "^2.0.1",
+    "twix": "^0.7.2",
     "underscore": "^1.8.3"
   },
   "optionalDependencies": {

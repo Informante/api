@@ -29,6 +29,12 @@
     "likes": {
       "type": "array"
     },
+    "ip": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
     "created_at": {
       "type": "date"
     }
@@ -99,6 +105,13 @@
       "principalId": "$authenticated",
       "permission": "ALLOW",
       "property": "comment"
+    },
+    {
+      "accessType": "WRITE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "__create__comments"
     },
     {
       "accessType": "EXECUTE",
