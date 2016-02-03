@@ -5,7 +5,7 @@ module.exports = function(user) {
   user.disableRemoteMethod('find', true);
   user.disableRemoteMethod('upsert', true);
   user.disableRemoteMethod('create', true);
-  user.disableRemoteMethod('findById', true);
+  //user.disableRemoteMethod('findById', true);
   user.disableRemoteMethod('exists', true);
   user.disableRemoteMethod('deleteById', true);
   user.disableRemoteMethod('updateAll', true);
