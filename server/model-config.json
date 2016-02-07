@@ -57,5 +57,9 @@
   "Report": {
     "dataSource": "db",
     "public": true
+  },
+  "Ad": {
+    "dataSource": "db",
+    "public": true
   }
 }

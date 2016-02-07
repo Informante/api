@@ -4,7 +4,7 @@ module.exports = function(PostType) {
     PostType.find({
       order: ['name ASC']
     }, cb);
-  }
+  };
 
   PostType.remoteMethod('allData', {
     http: {
