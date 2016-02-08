@@ -76,8 +76,11 @@ module.exports = function(Post) {
             allPost.push(postObject);
           });
 
-          // added adsense item
-          Ad.mediumRectangle(function(err, data) {
+          Ad.findOne({
+            where: {
+              type: 'MEDIUM_RECTANGLE'
+            }
+          }, function(err, data) {
             allPost.splice(1, 0, data);
             cb(null, allPost);
           });

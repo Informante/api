@@ -26,7 +26,6 @@ module.exports = function(Ad) {
   };
 
   Ad.remoteMethod('mediumRectangle', {
-    isStatic: true,
     http: {
       verb: 'get'
     },
