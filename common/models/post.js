@@ -76,11 +76,8 @@ module.exports = function(Post) {
             allPost.push(postObject);
           });
 
-          Ad.findOne({
-            where: {
-              type: 'MEDIUM_RECTANGLE'
-            }
-          }, function(err, data) {
+          // added ad
+          Ad.mediumRectangle(function(err, data) {
             allPost.splice(1, 0, data);
             cb(null, allPost);
           });
