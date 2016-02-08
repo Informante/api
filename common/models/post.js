@@ -22,6 +22,96 @@ module.exports = function(Post) {
   Post.disableRemoteMethod('__count__comments', false);
   Post.disableRemoteMethod('__delete__comments', false);
 
+  Post.getApp(function(err, app) {
+    var Ad = app.models.Ad;
+
+    // latest posts
+    Post.feed = function(skip, cb) {
+      skip = skip || 0;
+
+      Post.find({
+        order: 'created_at DESC',
+        limit: 15,
+        skip: skip,
+        include: [
+          {
+            relation: 'comments'
+          },
+          {
+            relation: 'postType',
+            scope: {
+              fields: [
+                'name'
+              ]
+            }
+          },
+          {
+            relation: 'user', // include the owner object
+            scope: { // further filter the owner object
+              fields: [
+                'name'
+              ], // only show two fields
+              include: { // include orders for the owner
+                relation: 'identities',
+                scope: {
+                  fields: [
+                    'profile'
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }, function(err, posts) {
+        if (err) {
+          cb(err, null);
+        }
+        else if (posts) {
+          var allPost = [];
+          posts.forEach(function(post) {
+            var postObject = post.toJSON();
+            postObject.countLike = numeral(postObject.likes.length).format('0a');
+            postObject.countComment = numeral(postObject.comments.length).format('0a');
+            postObject.created_at_format = moment(post.created_at).fromNow();
+            allPost.push(postObject);
+          });
+
+          // added adsense item
+          Ad.mediumRectangle(function(err, data) {
+            allPost.splice(1, 0, data);
+            cb(null, allPost);
+          });
+
+        }
+        else {
+          cb(null, []);
+        }
+      });
+    };
+
+
+    /**
+    * Instance remote method feed
+    */
+    Post.remoteMethod('feed', {
+      accepts: {
+        arg: 'skip',
+        type: 'number',
+        required: false,
+        http: {
+          source: 'query'
+        }
+      },
+      http: {
+        verb: 'get'
+      },
+      returns: {
+        root: true,
+        type: 'object'
+      }
+    });
+  });
+
   Post.generate = function(image, description, lat, lng, post_type_id, is_anonymous, cb) {
     // set current context
     var ctx = loopback.getCurrentContext();
@@ -200,63 +290,7 @@ module.exports = function(Post) {
     });
   };
 
-  // latest posts
-  Post.feed = function(skip, cb) {
-    skip = skip || 0;
 
-    Post.find({
-      order: 'created_at DESC',
-      limit: 15,
-      skip: skip,
-      include: [
-        {
-          relation: 'comments'
-        },
-        {
-          relation: 'postType',
-          scope: {
-            fields: [
-              'name'
-            ]
-          }
-        },
-        {
-          relation: 'user', // include the owner object
-          scope: { // further filter the owner object
-            fields: [
-              'name'
-            ], // only show two fields
-            include: { // include orders for the owner
-              relation: 'identities',
-              scope: {
-                fields: [
-                  'profile'
-                ]
-              }
-            }
-          }
-        }
-      ]
-    }, function(err, posts) {
-      if (err) {
-        cb(err, null);
-      }
-      else if (posts) {
-        var allPost = [];
-        posts.forEach(function(post) {
-          var postObject = post.toJSON();
-          postObject.countLike = numeral(postObject.likes.length).format('0a');
-          postObject.countComment = numeral(postObject.comments.length).format('0a');
-          postObject.created_at_format = moment(post.created_at).fromNow();
-          allPost.push(postObject);
-        });
-        cb(null, allPost);
-      }
-      else {
-        cb(null, []);
-      }
-    });
-  };
 
   Post.remoteMethod('generate', {
     accepts: [
@@ -314,24 +348,6 @@ module.exports = function(Post) {
       arg: 'id',
       type: 'string',
       required: true
-    },
-    http: {
-      verb: 'get'
-    },
-    returns: {
-      root: true,
-      type: 'object'
-    }
-  });
-
-  Post.remoteMethod('feed', {
-    accepts: {
-      arg: 'skip',
-      type: 'number',
-      required: false,
-      http: {
-        source: 'query'
-      }
     },
     http: {
       verb: 'get'
