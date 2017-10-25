@@ -1,34 +1,17 @@
 module.exports = function(grunt) {
   grunt.initConfig({
-    loopback_sdk_angular: {
-      services: {
+    'loopback_auto': {
+      'db_autoupdate': {
         options: {
-          input: './server/server.js',
-          output: 'js/lb-services.js'
-        }
-      }
+          dataSource: 'db',
+          app: './server/server',
+          config: './server/model-config',
+          method: 'autoupdate',
+        },
+      },
     },
-    docular: {
-      groups: [
-        {
-          groupTitle: 'LoopBack',
-          groupId: 'loopback',
-          sections: [
-            {
-              id: 'lbServices',
-              title: 'LoopBack Services',
-              scripts: [ 'js/lb-services.js' ]
-            }
-          ]
-        }
-      ]
-    },
-    // config of other tasks
   });
-
-  grunt.loadNpmTasks('grunt-loopback-sdk-angular');
-  grunt.loadNpmTasks('grunt-docular');
-  grunt.registerTask('default', [
-    'loopback_sdk_angular'
-  ]);
+  // Load the plugin
+  grunt.loadNpmTasks('grunt-loopback-auto');
+  grunt.registerTask('default', ['loopback_auto:db_autoupdate']);
 };
