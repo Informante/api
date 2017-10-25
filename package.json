@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
-    "pretest": "jshint ."
+    "pretest": "jshint .",
+    "migrate": "./node_modules/grunt-cli/bin/grunt"
   },
   "dependencies": {
     "body-parser": "^1.9.0",
