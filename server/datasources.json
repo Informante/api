@@ -1,7 +1,0 @@
-{
-  "db": {
-    "database": "informante",
-    "name": "db",
-    "connector": "mongodb"
-  }
-}
