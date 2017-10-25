@@ -10,8 +10,7 @@ module.exports = {
     successRedirect: '/auth/account',
     failureRedirect: '/login',
     scope: [
-      'email',
-      'publish_actions'
+      'email'
     ],
     failureFlash: true
   }
